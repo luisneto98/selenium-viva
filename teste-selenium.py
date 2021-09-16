@@ -1,20 +1,31 @@
 from selenium import webdriver
+from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
 driver = webdriver.Chrome()
 
 DEFAULT_PAGE = 'http://www.viva.ma.gov.br';
 
-def access_default_page(fnc, route="/"):
-    driver.get(DEFAULT_PAGE+route)
+def access_default_page(route=''):
+    def decorator(func): 
+        def finterna(*args, **kwargs):
+            driver.get(DEFAULT_PAGE+route)
+            return func(*args, **kwargs)
+    
+        return finterna
+    
+    return decorator 
 
-@access_default_page
-def case_ct_001():
+@access_default_page()
+def case_ct_017():
     # desenvolve aqui
-    assert "Python" in driver.title
+    menuItem = driver.find_element_by_id('menu-item-2538')
+    menuItem.click();
+
+    assert "http://www.viva.ma.gov.br/secao/s7-noticias/" in driver.current_url
 
 # chama aqui
-case_ct_001()
+case_ct_017()
 driver.close()
 
 
