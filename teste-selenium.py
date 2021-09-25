@@ -20,12 +20,34 @@ class VivaSeleniumTests(unittest.TestCase):
         self.driver = webdriver.Chrome(ChromeDriverManager().install())
 
     @access_default_page()
+    def test_case_ct_016(self):
+        # desenvolve aqui
+        constrat = self.driver.find_element_by_id('is_normal_contrast')
+        constrat.click()
+        
+        fontSize = self.driver.find_element_by_id('is_normal_fontsize')
+        fontSize.click()
+
+        carousel = self.driver.find_element_by_class_name('carousel-inner')
+        carousel.click()
+
+        highConstrat = self.driver.find_element_by_id('is_high_contrast')
+        
+        largeFontSize = self.driver.find_element_by_id('is_large_fontsize')
+
+        time.sleep(1)
+
+        assert highConstrat
+        assert largeFontSize
+
+    @access_default_page()
     def test_case_ct_017(self):
         # desenvolve aqui
         menuItem = self.driver.find_element_by_id('menu-item-2538')
         menuItem.click();
 
         assert "http://www.viva.ma.gov.br/secao/s7-noticias/" in self.driver.current_url
+
 
     @access_default_page()
     def test_case_ct_018(self):
@@ -39,6 +61,20 @@ class VivaSeleniumTests(unittest.TestCase):
         menuSubItem.click()
 
         assert "http://www.viva.ma.gov.br/cidadao-mirim/" in self.driver.current_url
+
+    @access_default_page('/secao/s7-noticias/')
+    def test_case_ct_019(self):
+        # desenvolve aqui
+        blockNotice = self.driver.find_element_by_id('noticia-principal')
+        links = blockNotice.find_elements_by_tag_name('div')
+        firstNotice = links[0]
+        firstNotice.click()
+        notice = self.driver.find_element_by_id('noticia-principal')
+        image = notice.find_element_by_tag_name('img')
+        url = self.driver.current_url
+        image.click()
+
+        assert url != self.driver.current_url
 
     @access_default_page('/cidadao-mirim/')
     def test_case_ct_020(self):
@@ -62,8 +98,6 @@ class VivaSeleniumTests(unittest.TestCase):
 
         maisNoticiasButton = self.driver.find_element_by_class_name('mais-noticias')
         maisNoticiasButton.click()
-
-        print(noticiasByMenu, self.driver.current_url)
 
         assert noticiasByMenu in self.driver.current_url
     
@@ -92,6 +126,39 @@ class VivaSeleniumTests(unittest.TestCase):
         assert page1 != page2
 
 
+    @access_default_page()
+    def test_case_ct_023(self):
+        # desenvolve aqui
+        button = self.driver.find_element_by_class_name('wp-image-1965')
+        button.click();
+
+        assert "https://seati.segov.ma.gov.br/procon/agendamento/" in self.driver.current_url
+
+    @access_default_page()
+    def test_case_ct_024(self):
+        # desenvolve aqui
+        self.driver.implicitly_wait(100)
+        socialLi = self.driver.find_element_by_class_name('Facebook')
+        facebookLink = socialLi.find_element_by_tag_name('a')
+        ActionChains(self.driver).move_to_element(facebookLink).perform()
+        facebookLink.click()
+        time.sleep(5)
+        self.driver.switch_to.window(self.driver.window_handles[1])
+        assert "facebook" in self.driver.current_url
+
+    @access_default_page('/secao/s7-noticias/')
+    def test_case_ct_025(self):
+        # desenvolve aqui
+        self.driver.maximize_window()
+        blockNotice = self.driver.find_element_by_id('noticia-principal')
+        links = blockNotice.find_elements_by_tag_name('div')
+        firstNotice = links[0]
+        dateExternal = firstNotice.text.split('\n')[0]
+
+        firstNotice.click()
+
+        dateInternal = self.driver.find_element_by_class_name('tarja-data').text
+        assert dateExternal in dateInternal
 
     def tearDown(self):
         self.driver.close()
